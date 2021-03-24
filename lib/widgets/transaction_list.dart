@@ -1,7 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'models/transaction.dart';
+import 'package:expense_manager/models/transaction.dart';
 import 'package:intl/intl.dart';
-
 
 class TrasactionList extends StatelessWidget {
 
@@ -12,8 +12,17 @@ class TrasactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.center,
       height: 300,
-      child: ListView.builder(
+      child:transactions.isEmpty? Column(
+        children: [
+          Text('No Transaction Available',
+            style:Theme.of(context).textTheme.title ,),
+          SizedBox(
+            height: 50,),
+          Container(height: 200,child: Image.asset('assets/images/waiting.png',fit: BoxFit.cover,))
+        ],
+      ) : ListView.builder(
           itemBuilder: (context, index) {
             return Card(
               child: Row(
@@ -23,7 +32,7 @@ class TrasactionList extends StatelessWidget {
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.blue)),
                     padding: EdgeInsets.all(10),
-                    child: Text('\$${transactions[index].amount.toString()}',
+                    child: Text('\$${transactions[index].amount.toStringAsFixed(2)}',
                       style: TextStyle(fontWeight: FontWeight.bold
                           , fontSize: 20,
                           color: Colors.blue),),

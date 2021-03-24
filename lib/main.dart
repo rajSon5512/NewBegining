@@ -1,11 +1,10 @@
 
-import 'file:///C:/Users/User/AndroidStudioProjects/expense_manager/lib/models/transaction.dart';
-import 'package:expense_manager/new_transaction.dart';
-import 'package:expense_manager/transaction_list.dart';
-import 'package:expense_manager/user_transaction.dart';
+import 'package:expense_manager/models/transaction.dart';
+import 'file:///C:/Users/User/AndroidStudioProjects/expense_manager/lib/widgets/new_transaction.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'file:///C:/Users/User/AndroidStudioProjects/expense_manager/lib/widgets/transaction_list.dart';
 
 
 void main()=>runApp(MyApp());
@@ -15,16 +14,26 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter App',
+      theme: ThemeData(
+        primarySwatch: Colors.orange,
+        accentColor: Colors.amber
+      ),
       home: MyHomePage(),
 
     );
   }
 }
 
-class MyHomePage extends StatelessWidget{
+class MyHomePage extends StatefulWidget{
 
-  final List<Transaction> transactions=[
-    Transaction(
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+
+  final List<Transaction> _user_transactions=[
+   /* Transaction(
       id: 't1',
       title: 'new shoes',
       amount: 69.90,
@@ -35,15 +44,44 @@ class MyHomePage extends StatelessWidget{
         title: 'new groceseries',
         amount: 69.40,
         date: DateTime.now()
-    )
+    ),*/
   ];
 
+  void _addNewTransaction(String txtitle,double txamount){
+
+    final newTx=Transaction(id: DateTime.now().toString(), title: txtitle, amount: txamount,
+        date: DateTime.now());
+
+    setState(() {
+      _user_transactions.add(newTx);
+    });
+
+    Navigator.of(context).pop();
+
+  }
+
+  void _startAddNewTransaction(BuildContext context) {
+    //function provide by flutter showModelBottoomSheet
+
+    showModalBottomSheet(context: context, builder: (_) {
+      return GestureDetector(
+        onTap: () {},
+        child: NewTransaction(_addNewTransaction),
+        behavior: HitTestBehavior.opaque,
+      );
+    });
+  }
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
      return Scaffold(
       appBar: AppBar(
         title: Text('Expense Manager'),
+        actions: [
+          IconButton(icon: Icon(Icons.add), onPressed: (){
+            _startAddNewTransaction(context);
+          })
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -57,10 +95,17 @@ class MyHomePage extends StatelessWidget{
                 child: Text('CHART',),
               ),
             ),
-            UserTransactions()
+            TrasactionList(_user_transactions),
         ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton:FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: (){
+          _startAddNewTransaction(context);
+        },
+      ) ,
     );
   }
 }
