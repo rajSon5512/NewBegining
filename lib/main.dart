@@ -1,5 +1,6 @@
 
 import 'package:expense_manager/models/transaction.dart';
+import 'package:expense_manager/widgets/charts.dart';
 import 'file:///C:/Users/User/AndroidStudioProjects/expense_manager/lib/widgets/new_transaction.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -33,7 +34,7 @@ class MyHomePage extends StatefulWidget{
 class _MyHomePageState extends State<MyHomePage> {
 
   final List<Transaction> _user_transactions=[
-   /* Transaction(
+    Transaction(
       id: 't1',
       title: 'new shoes',
       amount: 69.90,
@@ -42,10 +43,18 @@ class _MyHomePageState extends State<MyHomePage> {
     Transaction(
         id: 't2',
         title: 'new groceseries',
-        amount: 69.40,
+        amount: 10.40,
         date: DateTime.now()
-    ),*/
+    ),
   ];
+
+  List<Transaction> get _recentTransactions{
+    return _user_transactions.where((element){
+      return element.date.isAfter(DateTime.now().subtract(
+        Duration(days: 7),
+      ));
+    }).toList();
+  }
 
   void _addNewTransaction(String txtitle,double txamount){
 
@@ -88,13 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Colors.blue,
-                child: Text('CHART',),
-              ),
-            ),
+            Chart(_recentTransactions),
             TrasactionList(_user_transactions),
         ],
         ),
