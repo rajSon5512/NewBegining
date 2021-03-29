@@ -1,11 +1,11 @@
-
 import 'package:expense_manager/models/transaction.dart';
 import 'package:expense_manager/widgets/charts.dart';
-import 'file:///C:/Users/User/AndroidStudioProjects/expense_manager/lib/widgets/new_transaction.dart';
+import 'package:expense_manager/widgets/new_transaction.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/User/AndroidStudioProjects/expense_manager/lib/widgets/transaction_list.dart';
+import 'package:expense_manager/widgets/transaction_list.dart';
+import 'package:intl/intl.dart';
 
 
 void main()=>runApp(MyApp());
@@ -17,7 +17,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
       theme: ThemeData(
         primarySwatch: Colors.orange,
-        accentColor: Colors.amber
+        accentColor: Colors.amber,
+        errorColor: Colors.red,
       ),
       home: MyHomePage(),
 
@@ -34,18 +35,12 @@ class MyHomePage extends StatefulWidget{
 class _MyHomePageState extends State<MyHomePage> {
 
   final List<Transaction> _user_transactions=[
-    Transaction(
-      id: 't1',
-      title: 'new shoes',
-      amount: 69.90,
-      date: DateTime.now()
-    ),
-    Transaction(
-        id: 't2',
-        title: 'new groceseries',
-        amount: 10.40,
-        date: DateTime.now()
-    ),
+    Transaction(id: DateTime.now().toString(), title: 'first', amount: 10, date: DateTime.now()),
+    Transaction(id: DateTime.now().toString(), title: 'second', amount: 12, date: DateTime.now()),
+  Transaction(id: DateTime.now().toString(), title: 'Third', amount: 14, date: DateTime.now()),
+  Transaction(id: DateTime.now().toString(), title: 'fourth', amount: 13, date: DateTime.now()),
+    Transaction(id: DateTime.now().toString(), title: 'fifth', amount: 12, date: DateTime.now()),
+    Transaction(id: DateTime.now().toString(), title: 'sixth', amount: 21, date: DateTime.now()),
   ];
 
   List<Transaction> get _recentTransactions{
@@ -56,16 +51,29 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String txtitle,double txamount){
+  void _addNewTransaction(String txtitle,double txamount,DateTime chosenDate){
 
     final newTx=Transaction(id: DateTime.now().toString(), title: txtitle, amount: txamount,
-        date: DateTime.now());
+        date: chosenDate);
 
     setState(() {
       _user_transactions.add(newTx);
     });
-
     Navigator.of(context).pop();
+
+  }
+
+  void _deleteTransaction(String id){
+
+    setState(() {
+      _user_transactions.removeWhere((element){
+        if(element.id==id){
+         return true;
+        }
+        return false;
+      });
+
+    });
 
   }
 
@@ -98,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Chart(_recentTransactions),
-            TrasactionList(_user_transactions),
+            TrasactionList(_user_transactions,_deleteTransaction),
         ],
         ),
       ),
